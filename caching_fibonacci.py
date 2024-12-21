@@ -4,6 +4,8 @@ def caching_fibonacci() -> Callable[[], int]:
   """
   Returns a function that calculates the nth Fibonacci number, but caches
   previously calculated numbers to speed up the calculation.
+
+  Need to use through function variable, like fib = caching_fibonacci()
   """
   cache = {}
   def fibonacci(n) -> int:
@@ -18,7 +20,9 @@ def caching_fibonacci() -> Callable[[], int]:
 
   return fibonacci
 
+# Getting the function
 fib = caching_fibonacci()
 
+# Using the function
 print(fib(10))  # Виведе 55
 print(fib(15))  # Виведе 610
