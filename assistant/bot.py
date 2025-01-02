@@ -1,14 +1,5 @@
-def input_error(func):
-    def inner(*args, **kwargs):
-        try:
-            return func(*args, **kwargs)
-        except KeyError as e:
-            return str(e)
-        except ValueError as e:
-            return str(e)
-        except IndexError as e:
-            return str(e)
-    return inner
+from assistant.internal.addressbook import AddressBook
+from assistant.internal.record import Record
 
 def load_contacts(contacts):
     try:
@@ -42,45 +33,7 @@ def parse_input(user_input):
         cmd = cmd.strip().lower()
         return cmd, *args
 
-@input_error
-def add_contact(args, contacts):
-    if len(args) != 2:
-        raise ValueError("Please provide a name and phone number.")
-    name, phone = args
-    contacts[name.casefold()] = phone
-    return "Contact added."
 
-@input_error
-def change_contact(args, contacts):
-    if len(args) != 2:
-        raise ValueError("Please provide a name and a new phone number.")
-    name, phone = args
-    contacts[name.casefold()] = phone
-    return "Contact changed."
-
-@input_error
-def delete_contact(args, contacts):
-    if len(args) != 1:
-        raise ValueError("Please provide a name.")
-    name = args[0].casefold()
-    if name in contacts:
-        del contacts[name]
-        return "Contact deleted."
-    else:
-        raise KeyError("Contact not found.")
-    
-def list_contacts(contacts):
-    return "Contacts:\n" + "\n".join(f"{name[0].upper() + name[1:]}: {phone}" for name, phone in contacts.items())
-
-@input_error
-def search_contact(args, contacts):
-    if len(args) != 1:
-        raise ValueError("Please provide a name.")
-    name = args[0].casefold()
-    if name in contacts:
-        return f"Contact found: {name[0].upper() + name[1:]}: {contacts[name]}"
-    else:
-        raise KeyError("Contact not found.")
     
 
 
@@ -139,33 +92,42 @@ if __name__ == "__main__":
     main()
 
 
-# from collections import UserDict
 
-# class Field:
-#     def __init__(self, value):
-#         self.value = value
+# book = AddressBook()
 
-#     def __str__(self):
-#         return str(self.value)
+# Створення запису для John
+john_record = Record("John")
+john_record.add_phone("1234567890")
+john_record.add_phone("5555555555")
 
-# class Name(Field):
-#     # реалізація класу
-# 		pass
+john_record.change_contact_phone("1234567890", "1112223333")
+print(john_record)
 
-# class Phone(Field):
-#     # реалізація класу
-# 		pass
+john_record.delete_contact_phone("5555555555")
 
-# class Record:
-#     def __init__(self, name):
-#         self.name = Name(name)
-#         self.phones = []
+print(john_record)
 
-#     # реалізація класу
+# Додавання запису John до адресної книги
+#book.add_record(john_record)
 
-#     def __str__(self):
-#         return f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
+# Створення та додавання нового запису для Jane
+jane_record = Record("Jane")
+jane_record.add_phone("9876543210")
+#book.add_record(jane_record)
 
-# class AddressBook(UserDict):
-#     # реалізація класу
-# 		pass
+# # Виведення всіх записів у книзі
+# for name, record in book.data.items():
+#     print(record)
+
+# # Знаходження та редагування телефону для John
+# john = book.find("John")
+# john.edit_phone("1234567890", "1112223333")
+
+# print(john)  # Виведення: Contact name: John, phones: 1112223333; 5555555555
+
+# # Пошук конкретного телефону у записі John
+# found_phone = john.find_phone("5555555555")
+# print(f"{john.name}: {found_phone}")  # Виведення: 5555555555
+
+# # Видалення запису Jane
+# book.delete("Jane")
