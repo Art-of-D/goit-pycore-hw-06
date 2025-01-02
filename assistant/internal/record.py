@@ -1,12 +1,17 @@
-from collections import UserList
-from name import Name
-from phone import Phone
-from inputerror import input_error
+from .name import Name
+from .phone import Phone
+from .errorhandler import input_error
 
-class Record(UserList):
+class Record():
     def __init__(self, name):
         self.name = Name(name)
         self.phones = []
+
+    def get_name(self):
+        return self.name
+    
+    def get_phones(self):
+        return self.phones
     
     @input_error
     def add_phone(self, phone):
@@ -16,14 +21,14 @@ class Record(UserList):
         return f"Phone {phone} added for contact {self.name}."
 
     @input_error
-    def change_contact_phone(self, old_phone, new_phone):
+    def edit_contact_phone(self, old_phone, new_phone):
         if not old_phone or not new_phone:
             raise ValueError("Please provide both an old phone and a new phone number.")
         for phone in self.phones:
             if phone.value == old_phone:
                 self.phones.remove(phone)
+                self.phones.append(Phone(new_phone))
                 break
-        self.phones.append(Phone(new_phone))
         return f"Phone number {old_phone} changed to {new_phone} for contact {self.name}."
 
     @input_error
