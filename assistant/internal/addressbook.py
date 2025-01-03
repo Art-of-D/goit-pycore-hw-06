@@ -3,26 +3,28 @@ from collections import UserDict
 
 class AddressBook(UserDict):
         
-    # def list_contacts(contacts):
-    #     return "Contacts:\n" + "\n".join(f"{name[0].upper() + name[1:]}: {phone}" for name, phone in contacts.items())
+    def list_contacts(self):
+        if not self.data:
+            return "No contacts found."
+        return "Contacts:\n" + "\n".join(f"- {record}" for name, record in self.data.items())
 
-    # @input_error
-    # def search_contact(args, contacts):
-    #     if len(args) != 1:
-    #         raise ValueError("Please provide a name.")
-    #     name = args[0].casefold()
-    #     if name in contacts:
-    #         return contacts[name]
-    #     else:
-    #         raise KeyError("Contact not found.")
-    
     def add_record(self, contact):
         if not contact:
             raise ValueError("No contact provided.")
+        
         contact_name = str(contact.get_name())
         if not contact_name:
             raise ValueError("Contact name is empty.")
-        self.data[contact_name.casefold()] = contact
+        
+        contact_key = contact_name.casefold()
+        
+        if contact_key in self.data:
+            self.data[contact_key] = contact
+            return f"Contact {contact_name} changed!"
+        else:
+            self.data[contact_key] = contact
+            return f"Contact {contact_name} created!"
+        
 
     @input_error
     def find(self, name):
@@ -53,3 +55,8 @@ class AddressBook(UserDict):
         contact = self.find(name)
         del self.data[name.casefold()]
         return contact
+    
+    @input_error
+    def delete_phone(self, name, old_phone):
+        contact = self.find(name)
+        return contact.delete_contact_phone(old_phone)

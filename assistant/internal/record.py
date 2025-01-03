@@ -15,9 +15,8 @@ class Record():
     
     @input_error
     def add_phone(self, phone):
-        if not phone:
-            raise ValueError("Please provide a phone number.")
-        self.phones.append(Phone(phone))
+        phone_obj = Phone(phone)
+        self.phones.append(phone_obj)
         return f"Phone {phone} added for contact {self.name}."
 
     @input_error
